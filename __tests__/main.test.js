@@ -38,19 +38,18 @@ it('should normal passed', function() {
   })
 })
 
-it('should be executed recursively', function () {
-
+it('should be executed recursively', function() {
   class Person {
     @walli(w.string) name = 'imcuttle'
     @walli(w.number) age = 19
-    @walli(w.oneOf(['M', 'F']))w
+    @walli(w.oneOf(['M', 'F']))
     gender = 'X'
   }
 
   class Family {
     son = new Person()
   }
-  // TODO
-  console.log(check(new Family()))
+  expect(check(new Family(), { recursive: true })).toEqual({
+    son: { gender: "expected: oneOf(['M', 'F']), actual: 'X'." }
+  })
 })
-

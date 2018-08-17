@@ -32,16 +32,16 @@ export function check(
     order,
     ignoreValIsUndefined = true,
     ignoreNotHasVal = true,
-    recursive = true,
+    recursive = false,
     returnFailString = true
   } = {}
 ) {
   let collection = getWalliCollection(target)
-  if (!collection) {
+  if (!collection && !recursive) {
     return null
   }
 
-  let checkNameList = !includes || !includes.length ? Object.keys(collection) : includes
+  let checkNameList = !includes || !includes.length ? Object.keys(recursive ? target : collection) : includes
   if (excludes && !!excludes.length) {
     checkNameList = checkNameList.filter(name => !excludes.includes(name))
   }
@@ -52,34 +52,36 @@ export function check(
   let failMap = {}
   for (let i = 0; i < checkNameList.length; i++) {
     const name = checkNameList[i]
-    const mayWalli = collection[name]
+    const mayWalli = collection && collection[name]
 
     if (!mayWalli && recursive) {
-      const memberChecked = check.apply(target[name], arguments)
+      const memberChecked = check.apply(this, [target[name]].concat([...arguments].slice(1)))
       if (memberChecked) {
         failMap[name] = memberChecked
+        if (abortWhenFail) {
+          break
+        }
       }
-      return
-    }
+    } else {
+      if (process.env.NODE_ENV !== 'production' && !isValidWalli(mayWalli)) {
+        console.error(`walliDecorator: the walli instance of "${name}" is not an valid walli, instead of ${mayWalli}`)
+        continue
+      }
 
-    if (process.env.NODE_ENV !== 'production' && !isValidWalli(mayWalli)) {
-      console.error(`walliDecorator: the walli instance of "${name}" is not an valid walli, instead of ${mayWalli}`)
-      continue
-    }
+      if (
+        (ignoreNotHasVal && !(name in target)) ||
+        (ignoreValIsUndefined && typeof ignoreValIsUndefined === 'undefined')
+      ) {
+        continue
+      }
 
-    if (
-      (ignoreNotHasVal && !(name in target)) ||
-      (ignoreValIsUndefined && typeof ignoreValIsUndefined === 'undefined')
-    ) {
-      continue
-    }
+      let result = mayWalli.check(target[name])
+      if (result && !result.ok) {
+        failMap[name] = returnFailString ? result.toString() : result
 
-    let result = mayWalli.check(target[name])
-    if (result && !result.ok) {
-      failMap[name] = returnFailString ? result.toString() : result
-
-      if (abortWhenFail) {
-        break
+        if (abortWhenFail) {
+          break
+        }
       }
     }
   }
