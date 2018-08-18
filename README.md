@@ -13,7 +13,7 @@ The semantic walli definition by decorator.
 
 ### Verifiable
 
-[src/index.js:6-6](https://github.com/imcuttle/walli-decorator/blob/a54abdf8dd733edd2c06c6fc6c0e6314db7d884c/src/index.js#L6-L6 "Source code on GitHub")
+[src/index.js:6-6](https://github.com/imcuttle/walli-decorator/blob/61501e6b3774a4c3aa5db79205bcd889b12a254b/src/index.js#L6-L6 "Source code on GitHub")
 
 **Meta**
 
@@ -21,7 +21,7 @@ The semantic walli definition by decorator.
 
 ### check
 
-[src/index.js:40-117](https://github.com/imcuttle/walli-decorator/blob/a54abdf8dd733edd2c06c6fc6c0e6314db7d884c/src/index.js#L40-L117 "Source code on GitHub")
+[src/index.js:40-117](https://github.com/imcuttle/walli-decorator/blob/61501e6b3774a4c3aa5db79205bcd889b12a254b/src/index.js#L40-L117 "Source code on GitHub")
 
 Check the target
 
@@ -42,7 +42,7 @@ Returns **(null | [object](https://developer.mozilla.org/docs/Web/JavaScript/Ref
 
 ### walliDecorator
 
-[src/index.js:141-170](https://github.com/imcuttle/walli-decorator/blob/a54abdf8dd733edd2c06c6fc6c0e6314db7d884c/src/index.js#L141-L170 "Source code on GitHub")
+[src/index.js:141-170](https://github.com/imcuttle/walli-decorator/blob/61501e6b3774a4c3aa5db79205bcd889b12a254b/src/index.js#L141-L170 "Source code on GitHub")
 
 #### Parameters
 
