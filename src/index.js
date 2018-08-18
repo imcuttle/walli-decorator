@@ -3,7 +3,7 @@
  * @author imcuttle
  * @description
  */
-import { Verifiable, UnlawfulnessList, Unlawfulness } from 'walli'
+import { Verifiable } from 'walli'
 
 function makeSymbol(name) {
   return typeof Symbol === 'function' ? Symbol(name) : name
@@ -23,6 +23,20 @@ function isValidWalli(walliInstance) {
   return walliInstance instanceof Verifiable
 }
 
+/**
+ * Check the target
+ * @param target {any}
+ * @param options {{}}
+ * @param [options.abortWhenFail=false] {boolean} - Whether aborting the check flow when illegal value has been found.
+ * @param [options.excludes=[]] {string[]} - The excluding field name list.
+ * @param [options.includes=[]] {string[]} - The including field name list.
+ * @param [options.order=[]] {string[]} - The order of field name list.
+ * @param [options.ignoreValIsUndefined=true] - Whether ignoring the check flow when value is undefined.
+ * @param [options.ignoreNotHasVal=true] - Whether ignoring the check flow when the target has not value.
+ * @param [options.recursive=false] - Whether checking the target recursively.
+ * @param [options.returnWalliResult=false] - Whether returning walli check's result.
+ * @return {null | object}
+ */
 export function check(
   target,
   {
@@ -33,7 +47,7 @@ export function check(
     ignoreValIsUndefined = true,
     ignoreNotHasVal = true,
     recursive = false,
-    returnFailString = true
+    returnWalliResult = false
   } = {}
 ) {
   let collection = getWalliCollection(target)
@@ -64,20 +78,20 @@ export function check(
       }
     } else {
       if (process.env.NODE_ENV !== 'production' && !isValidWalli(mayWalli)) {
-        console.error(`walliDecorator: the walli instance of "${name}" is not an valid walli, instead of ${mayWalli}`)
+        console.error(`walli-decorator: The walli instance of "${name}" is not an valid walli, instead of ${mayWalli}`)
         continue
       }
 
       if (
         (ignoreNotHasVal && !(name in target)) ||
-        (ignoreValIsUndefined && typeof ignoreValIsUndefined === 'undefined')
+        (ignoreValIsUndefined && typeof target[name] === 'undefined')
       ) {
         continue
       }
 
       let result = mayWalli.check(target[name])
       if (result && !result.ok) {
-        failMap[name] = returnFailString ? result.toString() : result
+        failMap[name] = !returnWalliResult ? result.toString() : result
 
         if (abortWhenFail) {
           break
@@ -102,6 +116,28 @@ export function check(
   return failMap
 }
 
+/**
+ *
+ * @param walliInstance
+ * @return {function(*=, *, *): *}
+ * @example
+ * import walliDecorator, { check } from 'walli-decorator'
+ * import * as w from 'walli'
+ * class A {
+ *   \@walliDecorator(w.string)
+ *   abc = 123
+ * }
+ *
+ * check(new A()) // { abc: 'expected type: string, actual type: number.' }
+ *
+ * // The usage of options.recursive
+ * class B {
+ *   a = new A()
+ * }
+ *
+ * check(new B()) // null
+ * check(new B(), { recursive: true }) // { a: { abc: 'expected type: string, actual type: number.' } }
+ */
 function walliDecorator(walliInstance) {
   if (!isValidWalli(walliInstance)) {
     throw new TypeError('walli-decorator: walliInstance requires the instanceof walli.Verifiable. but ' + walliInstance)
