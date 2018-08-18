@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`check: returnWalliResult 1`] = `
+Object {
+  "abc": UnlawfulnessList {
+    "list": Array [
+      Unlawfulness {
+        "paths": Array [],
+        "reasons": Array [
+          ToEqualReason {
+            "actual": "",
+            "expect": OneOf {
+              "isRequired": true,
+              "msg": null,
+              "options": Object {},
+              "rule": Array [
+                "a",
+                "b",
+                "c",
+              ],
+            },
+            "msg": null,
+            "prefix": "",
+            "suffix": "",
+          },
+        ],
+      },
+    ],
+  },
+  "number": UnlawfulnessList {
+    "list": Array [
+      Unlawfulness {
+        "paths": Array [],
+        "reasons": Array [
+          TypeReason {
+            "actual": TypeItem {
+              "name": "string",
+              "type": [Function],
+            },
+            "expect": TypeItem {
+              "name": "StrictNumber",
+              "type": [Function],
+            },
+            "msg": null,
+            "prefix": "",
+            "suffix": "",
+          },
+        ],
+      },
+    ],
+  },
+}
+`;
