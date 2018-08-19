@@ -1,6 +1,6 @@
 {
   "name": "walli-decorator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "lib/index.js",
   "description": "The semantic walli definition by decorator.",
   "author": "imcuttle",
