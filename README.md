@@ -13,7 +13,7 @@ The semantic walli definition by decorator.
 
 ### walliDecorator
 
-[src/index.js:31-60](https://github.com/imcuttle/walli-decorator/blob/1856132beacabefc3bad9646b3f2e7a53fee422f/src/index.js#L31-L60 "Source code on GitHub")
+[src/index.js:31-60](https://github.com/imcuttle/walli-decorator/blob/023bac4ed32573bd91a0844fdb76a8f9cee7ac07/src/index.js#L31-L60 "Source code on GitHub")
 
 The decorator about walli.
 
@@ -44,7 +44,7 @@ check(new B(), { recursive: true }) // { a: { abc: 'expected type: string, actua
 
 ### check
 
-[src/index.js:97-174](https://github.com/imcuttle/walli-decorator/blob/1856132beacabefc3bad9646b3f2e7a53fee422f/src/index.js#L97-L174 "Source code on GitHub")
+[src/index.js:97-174](https://github.com/imcuttle/walli-decorator/blob/023bac4ed32573bd91a0844fdb76a8f9cee7ac07/src/index.js#L97-L174 "Source code on GitHub")
 
 Check the target
 
