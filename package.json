@@ -8,7 +8,7 @@
     "test": "jest",
     "build": "rimraf lib && babel src/ -Dd lib",
     "dev": "npm run build -- -w",
-    "doc": "documentation --github --markdown-toc=false readme src/index.js -s \"API\"",
+    "doc": "documentation --github --markdown-toc=false readme src/index.js -a public -s \"API\"",
     "prepublishOnly": "npm run doc && npm test"
   },
   "keywords": [

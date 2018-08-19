@@ -5,6 +5,62 @@
  */
 import { Verifiable } from 'walli'
 
+/**
+ * The decorator about walli.
+ * @param walliInstance
+ * @public
+ * @return {function(*=, *, *): *}
+ * @example
+ * import walliDecorator, { check } from 'walli-decorator'
+ * import * as w from 'walli'
+ * class A {
+ *   \@walliDecorator(w.string)
+ *   abc = 123
+ * }
+ *
+ * check(new A()) // { abc: 'expected type: string, actual type: number.' }
+ *
+ * // The usage of options.recursive
+ * class B {
+ *   a = new A()
+ * }
+ *
+ * check(new B()) // null
+ * check(new B(), { recursive: true }) // { a: { abc: 'expected type: string, actual type: number.' } }
+ */
+function walliDecorator(walliInstance) {
+  if (!isValidWalli(walliInstance)) {
+    throw new TypeError('walli-decorator: walliInstance requires the instanceof walli.Verifiable. but ' + walliInstance)
+  }
+
+  return function walliDecoratorInner(target, key, descriptor) {
+    // Firstly!
+    if (typeof target[WALLI_COLLECTION_NAME] === 'undefined') {
+      Object.defineProperty(target, WALLI_COLLECTION_NAME, {
+        value: {},
+        enumerable: false,
+        configurable: true
+      })
+    }
+    // inheritance
+    else {
+      // set to Prototype
+      Object.defineProperty(target, WALLI_COLLECTION_NAME, {
+        value: { ...target[WALLI_COLLECTION_NAME] },
+        enumerable: false,
+        configurable: true
+      })
+    }
+
+    let walliCollection = target[WALLI_COLLECTION_NAME]
+    walliCollection[key] = walliInstance
+
+    return descriptor
+  }
+}
+
+export default walliDecorator
+
 function makeSymbol(name) {
   return typeof Symbol === 'function' ? Symbol(name) : name
 }
@@ -25,6 +81,7 @@ function isValidWalli(walliInstance) {
 
 /**
  * Check the target
+ * @public
  * @param target {any}
  * @param options {{}}
  * @param [options.abortWhenFail=false] {boolean} - Whether aborting the check flow when illegal value has been found.
@@ -115,58 +172,3 @@ export function check(
   })
   return failMap
 }
-
-/**
- *
- * @param walliInstance
- * @return {function(*=, *, *): *}
- * @example
- * import walliDecorator, { check } from 'walli-decorator'
- * import * as w from 'walli'
- * class A {
- *   \@walliDecorator(w.string)
- *   abc = 123
- * }
- *
- * check(new A()) // { abc: 'expected type: string, actual type: number.' }
- *
- * // The usage of options.recursive
- * class B {
- *   a = new A()
- * }
- *
- * check(new B()) // null
- * check(new B(), { recursive: true }) // { a: { abc: 'expected type: string, actual type: number.' } }
- */
-function walliDecorator(walliInstance) {
-  if (!isValidWalli(walliInstance)) {
-    throw new TypeError('walli-decorator: walliInstance requires the instanceof walli.Verifiable. but ' + walliInstance)
-  }
-
-  return function walliDecoratorInner(target, key, descriptor) {
-    // Firstly!
-    if (typeof target[WALLI_COLLECTION_NAME] === 'undefined') {
-      Object.defineProperty(target, WALLI_COLLECTION_NAME, {
-        value: {},
-        enumerable: false,
-        configurable: true
-      })
-    }
-    // inheritance
-    else {
-      // set to Prototype
-      Object.defineProperty(target, WALLI_COLLECTION_NAME, {
-        value: { ...target[WALLI_COLLECTION_NAME] },
-        enumerable: false,
-        configurable: true
-      })
-    }
-
-    let walliCollection = target[WALLI_COLLECTION_NAME]
-    walliCollection[key] = walliInstance
-
-    return descriptor
-  }
-}
-
-export default walliDecorator
